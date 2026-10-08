@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RMS Titanic Passenger Survival Study - Interactive Data Analytics & ML Workbench</title>
+  <meta name="description"
+    content="A comprehensive data science study, interactive dashboard, and machine learning survival predictor for RMS Titanic passengers.">
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <!-- Top App Navigation Header -->
+  <header class="app-header">
+    <div class="brand-title">
+      <div class="brand-icon">⚓</div>
+      <div class="brand-text">
+        <h1>RMS TITANIC <span>SURVIVAL STUDY</span></h1>
+        <p>Interactive Data Science & Machine Learning Workbench (1912 Disaster Analysis)</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="overview">📊 Overview</button>
+      <button class="tab-btn" data-tab="analytics">📈 Analytics</button>
+      <button class="tab-btn" data-tab="predictor">🤖 ML Predictor</button>
+      <button class="tab-btn" data-tab="explorer">🔍 Passenger Explorer</button>
+      <button class="tab-btn" data-tab="decks">🚢 Decks & Lifeboats</button>
+      <button class="tab-btn" data-tab="simulator">⚡ What-If Simulator</button>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="container">
+
+    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+    <section id="tab-overview" class="tab-content active">
+      <h2 class="section-title"><span>Executive</span> Summary & Historical Metrics</h2>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Dataset Population</span>
+            <span class="metric-icon">👥</span>
+          </div>
+          <div class="metric-value" id="metric-total">210</div>
+          <div class="metric-sub">Analyzed passenger subset</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Overall Survival Rate</span>
+            <span class="metric-icon">🛟</span>
+          </div>
+          <div class="metric-value" id="metric-survival-rate">39.0%</div>
+          <div class="metric-sub" id="metric-survived-count">82 Survived / 128 Lost</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Female Survival Rate</span>
+            <span class="metric-icon">♀️</span>
+          </div>
+          <div class="metric-value" id="metric-female-rate">73.6%</div>
+          <div class="metric-sub">vs <span id="metric-male-rate">18.9%</span> Male Survival</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">1st Class Survival</span>
+            <span class="metric-icon">⭐</span>
+          </div>
+          <div class="metric-value" id="metric-class1-rate">63.2%</div>
+          <div class="metric-sub">vs <span id="metric-class3-rate">24.1%</span> 3rd Class Survival</div>
+        </div>
+      </div>
+
+      <!-- Quick Highlights & Preview -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3 style="font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 1rem;">Key Historical
+            Discoveries</h3>
+          <ul
+            style="color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.8rem; padding-left: 1.2rem;">
+            <li><strong>Gender Bias ("Women & Children First"):</strong> Female passengers were nearly 4x more likely to
+              survive than male passengers due to strict lifeboat boarding protocols.</li>
+            <li><strong>Socioeconomic Class Stratification:</strong> 1st Class passengers enjoyed priority access to the
+              top boat deck and higher survival rates (63%) compared to 3rd Class passengers (24%) trapped below deck.
+            </li>
+            <li><strong>Family Dynamics:</strong> Passengers traveling in small family units (2 to 4 members) achieved
+              higher survival rates than solo travelers or large families (>5 members) who struggled to remain together.
+            </li>
+            <li><strong>Port of Embarkation Effect:</strong> Passengers embarking at Cherbourg, France exhibited higher
+              survival rates due to a significantly higher proportion of 1st class ticket holders.</li>
+          </ul>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-container">
+            <canvas id="chart-gender"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: ANALYTICS ==================== -->
+    <section id="tab-analytics" class="tab-content">
+      <h2 class="section-title"><span>Interactive</span> Demographic Analytics</h2>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-container">
+            <canvas id="chart-class"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-container">
+            <canvas id="chart-age"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-container">
+            <canvas id="chart-family"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-container">
+            <canvas id="chart-embarked"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: ML PREDICTOR ==================== -->
+    <section id="tab-predictor" class="tab-content">
+      <h2 class="section-title"><span>Machine Learning</span> Survival Probability Estimator</h2>
+
+      <div class="predictor-layout">
+        <!-- Form Panel -->
+        <div class="form-panel">
+          <h3 style="font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 1.5rem;">Passenger
+            Attribute Profile</h3>
+
+          <form id="predictor-form">
+            <div class="form-group">
+              <label for="pred-sex">Gender</label>
+              <select id="pred-sex" class="form-control">
+                <option value="female" selected>Female</option>
+                <option value="male">Male</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pred-pclass">Ticket Class</label>
+              <select id="pred-pclass" class="form-control">
+                <option value="1">1st Class (Upper Deck)</option>
+                <option value="2">2nd Class (Middle Deck)</option>
+                <option value="3" selected>3rd Class (Lower Deck)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pred-age">Age (Years)</label>
+              <input type="number" id="pred-age" class="form-control" value="25" min="0" max="100" step="1">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="pred-sibsp">Siblings / Spouse</label>
+                <input type="number" id="pred-sibsp" class="form-control" value="0" min="0" max="10">
+              </div>
+
+              <div class="form-group">
+                <label for="pred-parch">Parents / Children</label>
+                <input type="number" id="pred-parch" class="form-control" value="0" min="0" max="10">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pred-fare">Ticket Fare (£)</label>
+              <input type="number" id="pred-fare" class="form-control" value="15.00" min="0" max="600" step="0.5">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="pred-embarked">Embarkation Port</label>
+                <select id="pred-embarked" class="form-control">
+                  <option value="S" selected>Southampton (S)</option>
+                  <option value="C">Cherbourg (C)</option>
+                  <option value="Q">Queenstown (Q)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-cabin">Cabin Recorded?</label>
+                <select id="pred-cabin" class="form-control">
+                  <option value="Unknown" selected>No (Unknown)</option>
+                  <option value="C85">Yes (Assigned Cabin)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 1rem;">Calculate Survival Probability</button>
+          </form>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel">
+          <h3 style="font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 1rem;">ML Model
+            Prediction</h3>
+
+          <div class="gauge-box">
+            <div class="gauge-percentage" id="pred-prob">54.2%</div>
+            <div class="gauge-status survived" id="pred-status">Moderate Chance of Survival</div>
+          </div>
+
+          <h4
+            style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            Feature Attribution Breakdown (Explainable AI)
+          </h4>
+
+          <div class="attribution-list" id="pred-attribution">
+            <!-- Dynamic Feature Contributions -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Model Performance Metrics Card -->
+      <div
+        style="margin-top: 2rem; background: var(--bg-card); border: 1px solid var(--bg-card-border); border-radius: var(--radius-lg); padding: 1.5rem;">
+        <h3 style="font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 1rem;">Model Evaluation
+          Scorecard</h3>
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; text-align: center;">
+          <div style="background: rgba(7, 11, 25, 0.6); padding: 1rem; border-radius: var(--radius-sm);">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Accuracy</div>
+            <div style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--accent-cyan);"
+              id="eval-accuracy">81.4%</div>
+          </div>
+          <div style="background: rgba(7, 11, 25, 0.6); padding: 1rem; border-radius: var(--radius-sm);">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Precision</div>
+            <div style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--accent-gold);"
+              id="eval-precision">78.2%</div>
+          </div>
+          <div style="background: rgba(7, 11, 25, 0.6); padding: 1rem; border-radius: var(--radius-sm);">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Recall</div>
+            <div style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--accent-cyan);"
+              id="eval-recall">75.6%</div>
+          </div>
+          <div style="background: rgba(7, 11, 25, 0.6); padding: 1rem; border-radius: var(--radius-sm);">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">F1-Score</div>
+            <div style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--accent-gold);" id="eval-f1">
+              76.8%</div>
+          </div>
+        </div>
+
+        <div
+          style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 2rem; font-size: 0.85rem; color: var(--text-muted);">
+          <span>True Positive (TP): <strong style="color: var(--accent-cyan);" id="cm-tp">62</strong></span>
+          <span>False Positive (FP): <strong style="color: var(--accent-rose);" id="cm-fp">17</strong></span>
+          <span>True Negative (TN): <strong style="color: var(--accent-cyan);" id="cm-tn">109</strong></span>
+          <span>False Negative (FN): <strong style="color: var(--accent-rose);" id="cm-fn">22</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: PASSENGER EXPLORER ==================== -->
+    <section id="tab-explorer" class="tab-content">
+      <h2 class="section-title"><span>Passenger</span> Database Explorer</h2>
+
+      <!-- Filter Toolbar -->
+      <div class="filter-bar">
+        <input type="text" id="search-name" class="form-control search-input" placeholder="🔍 Search passenger name...">
+
+        <select id="filter-sex" class="form-control" style="width: 140px;">
+          <option value="all">All Genders</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+        </select>
+
+        <select id="filter-class" class="form-control" style="width: 140px;">
+          <option value="all">All Classes</option>
+          <option value="1">1st Class</option>
+          <option value="2">2nd Class</option>
+          <option value="3">3rd Class</option>
+        </select>
+
+        <select id="filter-status" class="form-control" style="width: 150px;">
+          <option value="all">All Statuses</option>
+          <option value="1">Survived</option>
+          <option value="0">Perished</option>
+        </select>
+      </div>
+
+      <!-- Data Table -->
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Passenger Name</th>
+              <th>Gender</th>
+              <th>Class</th>
+              <th>Age</th>
+              <th>Fare (£)</th>
+              <th>Port</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Dynamic Table Rows -->
+          </tbody>
+        </table>
+
+        <!-- Table Pagination -->
+        <div class="pagination">
+          <button id="btn-prev" class="btn-page" disabled>Previous</button>
+          <span id="page-info" style="font-size: 0.9rem; color: var(--text-muted);">Page 1 of 1</span>
+          <button id="btn-next" class="btn-page">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: DECKS & LIFEBOATS ==================== -->
+    <section id="tab-decks" class="tab-content">
+      <h2 class="section-title"><span>Spatial Deck</span> & Evacuation Breakdown</h2>
+
+      <div class="deck-plan-grid" id="deck-cards-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ==================== TAB 6: WHAT-IF SIMULATOR ==================== -->
+    <section id="tab-simulator" class="tab-content">
+      <h2 class="section-title"><span>What-If</span> Evacuation Scenario Simulator</h2>
+
+      <div class="simulator-panel">
+        <h3 style="font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 1.5rem;">Historical
+          Counterfactual Simulation</h3>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <label style="font-weight: 600;">Available Lifeboats</label>
+            <span id="sim-lifeboats-val" style="color: var(--accent-gold); font-weight: 700;">20 Lifeboats (1,178
+              Capacity)</span>
+          </div>
+          <input type="range" id="sim-lifeboats" class="slider-control" min="16" max="48" value="20" step="2">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <label style="font-weight: 600;">Boarding Protocol Enforcement ("Women & Children First")</label>
+            <span id="sim-priority-val" style="color: var(--accent-cyan); font-weight: 700;">85% Enforced</span>
+          </div>
+          <input type="range" id="sim-female-priority" class="slider-control" min="50" max="100" value="85" step="5">
+        </div>
+
+        <div
+          style="margin-top: 2rem; background: rgba(7, 11, 25, 0.8); border: 1px solid var(--accent-gold-glow); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
+          <div style="font-size: 0.9rem; color: var(--text-muted);">Simulated Total Survivors</div>
+          <div style="font-family: var(--font-heading); font-size: 3rem; color: var(--accent-cyan); font-weight: 900;"
+            id="sim-survivors">1,105</div>
+          <div style="font-size: 1.1rem; color: var(--accent-gold);" id="sim-rate">49.7% Overall Survival Rate</div>
+          <div style="margin-top: 0.5rem; font-weight: 700; color: #4cc9f0;" id="sim-saved-delta">+395 Lives Saved vs
+            History (710 Actual)</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Titanic Passenger Survival Study • Built with Vanilla HTML5, CSS3, JavaScript & Chart.js • Data source:
+      Historical RMS Titanic Passenger Manifest</p>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="data.js"></script>
+  <script src="model.js"></script>
+  <script src="charts.js"></script>
+  <script src="app.js"></script>
+
+</body>
+
+</html>
